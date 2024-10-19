@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Searchable Recyclerview With Filterable</string>
+    <string name="profile_image">profile image</string>
+    <string name="deep_work_description">Cal Newport is the founder of the term “Deep Work”: a way
+        of focusing without distraction on a cognitively demanding task, making you better at what
+        you are doing, letting you achieve more in less time and providing you with a sense of true
+        fulfillment in mastering the skill.
+        Newport claims that too many of us have lost the ability to dig deep into their work.
+        Instead all of us are being distracted by a constant stream of emails, message notifications
+        and social media buzzes. In his book Newport shows the reader methods others have used to get
+        into a zone of deep work and surprises with suggestions like the one that serious professionals
+        should get rid of social media and that we all should practice being bored again.</string>
+    <string name="deep_work_url">https://www.virtuology-academy.com/wp-content/uploads/2019/11/61GRaU4fWfL-637x675.jpg</string>
 </resources>

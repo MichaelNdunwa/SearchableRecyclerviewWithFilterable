@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    Search bar background-->
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="background">@drawable/search_bar_background</item>
+    </style>
+</resources>
