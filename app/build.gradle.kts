@@ -51,9 +51,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    // Glide dependencies:
-    implementation("com.github.bumptech.glide:glide:4.13.2")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
     // Picasso dependencies:
     implementation("com.squareup.picasso:picasso:2.8")
     // Firebase dependency:
