@@ -8,15 +8,15 @@ import com.example.searchablerecyclerviewwithfilterable.models.BookModel
 import com.example.searchablerecyclerviewwithfilterable.R
 import com.squareup.picasso.Picasso
 
-class SearchAdapter(val bookList: MutableList<BookModel>) :
+class SearchAdapter(var bookList: MutableList<BookModel>) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
 //    private lateinit var bookList: MutableList<BookModel>
 
-   /* fun filterList(filteredBookList: MutableList<BookModel>) {
+    fun filterList(filteredBookList: MutableList<BookModel>) {
         bookList = filteredBookList
         notifyDataSetChanged()
-    }*/
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding =

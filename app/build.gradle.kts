@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -55,4 +56,13 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
     // Picasso dependencies:
     implementation("com.squareup.picasso:picasso:2.8")
+    // Firebase dependency:
+//    implementation("com.google.firebase:firebase-bom:33.4.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-firestore")
+    // Google play services dependencies:
+    implementation("com.google.android.gms:play-services-base:18.5.0")
 }

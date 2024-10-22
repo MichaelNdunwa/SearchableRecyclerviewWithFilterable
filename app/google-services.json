@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "280949234632",
+    "project_id": "book-project-d71e6",
+    "storage_bucket": "book-project-d71e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280949234632:android:a2861b1d2fba1b9ae0befd",
+        "android_client_info": {
+          "package_name": "com.example.searchablerecyclerviewwithfilterable"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAZTKJA0RU3WkmGWZ0Kpf5u6A1Ft9P4wk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
