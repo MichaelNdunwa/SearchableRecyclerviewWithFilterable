@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.searchablerecyclerviewwithfilterable.adapters.SearchAdapter
 import com.example.searchablerecyclerviewwithfilterable.databinding.ActivityMainBinding
@@ -47,15 +50,24 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         bookDataStore = FirebaseFirestore.getInstance()
 
+        // initialize swipeRefreshLayout
+        swipeRefreshLayout = binding.swipeRefreshLayout
+
         buildRecyclerView() // build recycler view
-        customHideKeyboard() // hide keyboard when clicking outside of edit text
 
         // pull to refresh:
         refreshBooks()
     }
 
+    // I override the dispatchTouchEvent to enable me hide keyboard when the other view is clicked:
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (ev!!.action == MotionEvent.ACTION_DOWN) {
+            customHideKeyboard()
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun refreshBooks() {
-        swipeRefreshLayout = binding.swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             Toast.makeText(this@MainActivity, "Book list updated", Toast.LENGTH_SHORT).show()
             buildRecyclerView()
@@ -63,45 +75,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun customHideKeyboard() {
-       binding.main.setOnTouchListener { v, event ->
-           if (event.action == MotionEvent.ACTION_DOWN) {
-               val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-               imm.hideSoftInputFromWindow(v.windowToken, 0)
-           }
-           false
-       }
+        if (this.currentFocus != null) {
+            val imm = this.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(this.currentFocus!!.windowToken, 0)
+        }
     }
 
     private fun buildRecyclerView() {
+        // Show progress bar:
+        binding.progressBar.visibility = View.VISIBLE
+
         // initializing bookList
         bookList = mutableListOf<BookModel>()
         adapter = SearchAdapter(bookList)
 
         // Fetching books from firebase:
-        bookDataStore.collection("books")
-            .addSnapshotListener(object : EventListener<QuerySnapshot> {
-                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException? ) {
-                    if (error != null) {
-                        Log.e("MainActivity", "Error getting documents: ", error)
-                        return
+        bookDataStore.collection("books").get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot != null) {
+                    for (document in querySnapshot.documents) {
+                        bookList.add(document.toObject(BookModel::class.java)!!)
                     }
-
-                    if (value != null) {
-                        for (dc: DocumentChange in value.documentChanges) {
-                            if (dc.type == DocumentChange.Type.ADDED) {
-                                bookList.add(dc.document.toObject(BookModel::class.java))
-                            }
-                        }
-                        adapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged()
+                    binding.recyclerView.apply {
+                        adapter = this@MainActivity.adapter
+                        layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+                        setHasFixedSize(false)
                     }
-                    binding.recyclerView.adapter = adapter
-                    binding.recyclerView.layoutManager = GridLayoutManager(this@MainActivity, 2)
-                    binding.recyclerView.setHasFixedSize(false)
                 }
+                // Hide progress bar:
+                binding.progressBar.visibility = View.GONE
+            }
+            .addOnFailureListener { exception ->
+                Log.e("MainActivity", "Error getting documents: ", exception)
+                Toast.makeText(this@MainActivity, "Error getting documents: $exception", Toast.LENGTH_SHORT).show()
 
-            })
+                // Hide progress bar:
+                binding.progressBar.visibility = View.GONE
+            }
 
         // Implementing search bar
         binding.searchText.addTextChangedListener(object : TextWatcher {
@@ -110,7 +122,8 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int ) {
                 adapter.filterList(
                     bookList.filter {
-                        it.bookName.contains(s.toString(), ignoreCase = true)
+                        it.bookName.contains(s.toString(), ignoreCase = true) ||
+                                it.bookAuthor.contains(s.toString(), ignoreCase = true)
                     }.toMutableList()
                 )
             }
