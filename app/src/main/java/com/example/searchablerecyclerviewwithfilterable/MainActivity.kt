@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.searchablerecyclerviewwithfilterable.adapters.SearchAdapter
 import com.example.searchablerecyclerviewwithfilterable.databinding.ActivityMainBinding
 import com.example.searchablerecyclerviewwithfilterable.models.BookModel
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: SearchAdapter
     private lateinit var bookList: MutableList<BookModel>
     private lateinit var bookDataStore: FirebaseFirestore
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +47,20 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
         bookDataStore = FirebaseFirestore.getInstance()
 
-        buildRecyclerView()
-        customHideKeyboard()
+        buildRecyclerView() // build recycler view
+        customHideKeyboard() // hide keyboard when clicking outside of edit text
+
+        // pull to refresh:
+        refreshBooks()
+    }
+
+    private fun refreshBooks() {
+        swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            Toast.makeText(this@MainActivity, "Book list updated", Toast.LENGTH_SHORT).show()
+            buildRecyclerView()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

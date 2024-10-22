@@ -65,4 +65,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     // Google play services dependencies:
     implementation("com.google.android.gms:play-services-base:18.5.0")
+    // Swipe refresh layout dependencies:
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 }
